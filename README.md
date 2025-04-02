@@ -75,7 +75,7 @@ Common error messages and solutions:
    - Make sure the phone number starts with "+" and the country code
 
 2. "Invalid credentials"
-   - Double-check your ACCOUNT_SID and AUTH_TOKEN. You can copy them from the [ClickSend Dashboard](https://clicksend.com)
+   - Double-check your CLICKSEND_USERNAME and CLICKSEND_API_KEY. You can copy them from the [ClickSend Dashboard](https://clicksend.com)
 
 ## Contributing
 
