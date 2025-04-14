@@ -1,0 +1,385 @@
+openapi: 3.0.0
+info:
+  title: SMS
+  description: |-
+    You can use the SMS endpoints to send and manage SMS, check the cost of sending SMS, view message history, and more. Integrate them into your system as part of your workflow.
+
+    Relevant guides: <a href="https://help.clicksend.com/article/h474eseq3a-how-many-characters-can-i-send-in-an-sms" target="_blank">How many characters can I send in an SMS?</a>, <a href="https://help.clicksend.com/article/1hd33n2xns-sms-status-delivery-receipt-expired" target="_blank">SMS status delivery receipt expired</a>, <a href="https://help.clicksend.com/article/mueq678bcy-do-you-support-non-english-characters" target="_blank">Do you support non-English characters</a>, and <a href="https://help.clicksend.com/category/mfdctha7f0-country-specific-features-and-restrictions" target="_blank">Country Specific Features and Restrictions</a>.
+    <div style="background-color: #e8f4ff; padding: 15px; border-radius: 4px; border-left: 4px solid #0066cc;">
+    ClickSend is pausing SMS messages containing URLs for new customers. Please remove links from messages to maintain uninterrupted delivery, or <a href="https://www.clicksend.com/gb/help/" target="_blank">contact support</a> to apply for approval for URL messaging.
+    </div>
+  version: 1.0.0
+servers:
+  - url: https://rest.clicksend.com
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+paths:
+  /v3/sms/send:
+    post:
+      summary: Send SMS
+      operationId: send-sms
+      description: |-
+        Use this endpoint to send messages to your recipients, either as phone numbers or contacts from your contact list. 
+        The sender of the message (<a href="https://help.clicksend.com/article/4kgj7krx00-what-is-a-sender-id-or-sender-number" target="_blank"><strong>Sender ID</strong></a>) can be a shared number, a dedicated number, alpha tag (business name), or your own number. 
+        You can send messages both locally and globally, subject to the country restrictions. The cost of sending messages varies based on the <a href="https://help.clicksend.com/article/h474eseq3a-how-many-characters-can-i-send-in-an-sms" target="_blank">type</a> and length of the message.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - body
+              properties:
+                messages:
+                  type: array
+                  description: Messages to send to customers.
+                  items:
+                    type: object
+                    properties:
+                      body:
+                        type: string
+                        description: |-
+                          The message to send. The price of sending a message depends on the number of characters and the type of message. There are two types:  
+
+                          - Standard message - Contains only characters in the <a href="https://en.wikipedia.org/wiki/GSM_03.38" target="_blank">GSM</a> set, with a maximum of 160 characters.  
+                              
+                          - Unicode message - Contains characters outside the <a href="https://en.wikipedia.org/wiki/GSM_03.38" target="_blank">GSM</a> set, with a maximum of 70 characters.  
+                              
+                          Longer messages will be sent as multiple messages (parts), but the recipient will receive them as a single long message. Visit <a href="https://help.clicksend.com/article/h474eseq3a-how-many-characters-can-i-send-in-an-sms" target="_blank">this page</a> to learn more about the number of characters per message, and <a href="http://smscharactercount.com/#/counter" target="_blank">this page</a> to count the number of characters.
+                      to:
+                        type: string
+                        description: |
+                          The phone number of the recipient. It should be in the international format (<a href="https://en.wikipedia.org/wiki/E.164" target="_blank">E.164</a>). You can send to a contact list using the _list_id_ parameter. You need to provide the _to_ parameter or the _list_id_ parameter.
+                    
+                          <div class="info-box">
+                            <h4><i class="fas fa-info-circle"></i> Note:</h4>
+                            <p>To send SMS overseas, enable the <a href="https://help.clicksend.com/article/qdavyt16qs-global-sending" target="_blank">global sending</a> feature on your account either through the <a href="https://dashboard.clicksend.com/global-sending" target="_blank">Dashboard</a>, or by contacting <a href="https://www.clicksend.com/au/help/" target="_blank">customer support</a>.</p>
+                          </div>                   
+                      from: 
+                        type: string
+                        description: |-
+                          The sender of the message. This is also referred to as the **<a href="https://help.clicksend.com/article/4kgj7krx00-what-is-a-sender-id-or-sender-number" target="_blank">Sender ID</a>**. You can use:
+                          - **Shared number:** A number that is randomly selected from a pool if no number is specified. This is not available in the US and Canada. You can’t use a shared number if you have a dedicated number.
+                          - **Dedicated number:** A number you've purchased from ClickSend. You can purchase a dedicated number using the <a href="https://dashboard.clicksend.com/sender-ids/manage-senders" target="_blank">Dashboard</a> or the [**Purchase Dedicated Number**](/accounts/sender-ids/#operation/purchase-dedicated-number) endpoint. It should be in the international format (<a href="https://en.wikipedia.org/wiki/E.164" target="_blank">E.164</a>).
+                          - **Alpha tag:** A sender name, like the name of your business, used as the **Sender ID** instead of a number. Recipients cannot reply to an alpha tag. You can register an alpha tag using the <a href="https://dashboard.clicksend.com/sender-ids/manage-senders" target="_blank">dashboard</a> or the **[Request Alpha Tag](/accounts/sender-ids/#operation/request-alpha-tag)** endpoint. Check which countries support alpha tags <a href="https://help.clicksend.com/article/532u04vhaq-which-countries-support-alpha-tags" target="_blank">here</a>.
+                          - **Own number:** Your own number that is connected to your account. Replies from recipients are sent directly to your number. You can register your own number using the <a href="https://dashboard.clicksend.com/sender-ids/manage-senders" target="_blank">dashboard</a> or the [**Request Own Number Verification OTP**](/accounts/sender-ids/#operation/request-own-number-verification-otp) endpoint to get the _verification_id_ and OTP code needed for the [**Verify Own Number OTP**](/accounts/sender-ids/#operation/verify-own-number-otp) endpoint. This isn't available in the US and Canada.
+                          If your **Sender ID** has a different country code to the recipient’s, it'll be replaced by a local number, except in <a href="https://help.clicksend.com/category/mfdctha7f0-country-specific-features-and-restrictions" target="_blank">certain countries</a>. If the sender number is blocked, a different number will replace it.
+                      source: 
+                        type: string
+                        description: |-
+                          The source of the request. For example, the name of your application. It's used to identify messages sent from various applications.
+                      schedule: 
+                        type: integer
+                        description: |-
+                          The time you want the message to be sent. It should be in <a href="http://help.clicksend.com/what-is-a-unix-timestamp" target="_blank">Unix format</a>.
+                      custom_string: 
+                        type: string
+                        description: |-
+                          A note that will be sent back to you with the response from the endpoint.
+                      list_id: 
+                        type: string
+                        description: |-
+                          The _list_id_ of the contact list to send the message to. Use the [**View Contact List**](/contacts/lists/#operation/view-list-contacts) endpoint to see your contact lists. You can also use the other [lists endpoints](/contacts/lists/) to create and manage your contact list. You need to provide the _to_ parameter or the _list_id_ parameter.
+                      contact_id: 
+                        type: integer
+                        description: |-
+                          The _contact_id_ of the contact to send the message to. A _contact_id_ is connected to a _list_id_. Use the Search Contact list endpoint to view the _contact_id_ of the specified number. This parameter will be sent back to you with the response from the endpoint.
+                          
+                          <div class="warning-box">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Warning:</h4>
+                            <p>This parameter is no longer in use.</p>
+                          </div>
+                      country: 
+                        type: string
+                        description: |-
+                          The country code of the recipient in two-letter format (e.g. US, UK, AU, NZ, <a href="https://help.clicksend.com/article/7wtbhhy6sy-country-code-calling-code-list" target="_blank">etc</a>).
+                      from_email: 
+                        type: string
+                        description: |-
+                          The email address to which replies should be emailed to. If omitted, the reply will be emailed back to the user who sent the outgoing SMS.
+                      exclude_no_sender_id_recipients: 
+                        type: boolean
+                        description: |-
+                          Used for validating whether the **Sender ID** in registered or not. You can either specify:
+
+                          - **True** - It will begin sending messages without validating the Sender ID. If your contact is in a country that requires Sender ID validation, your recipient will not received it.
+                              
+                          - **False** - It will only send messages if the **Sender ID** is registered.
+                    required:
+                      - body
+              example:
+                senders:
+                  - recipient_country_code: "AU"
+                    sender_id: "ClickSend"
+                    sender_type: "alpha_tag"
+                  - recipient_country_code: "US"
+                    sender_type: "shared_longcode"
+                  - recipient_country_code: "AU"
+                    sender_id: "+61411111111"
+                    sender_type: "longcode"
+                  - recipient_country_code: "AU"
+                    sender_id: "8084"
+                    sender_type: "shortcode"
+                  - recipient_country_code: "US"
+                    sender_id: "+14155552345"
+                    sender_type: "10DLC"
+                  - recipient_country_code: "AU"
+                    sender_id: "+61411111111"
+                    sender_type: "own_number"
+                shorten_urls: false
+                messages:
+                  - body: "Hello from ClickSend! This is a test message."
+                    to: "+61411111111"
+                  - body: "Hello from ClickSend! This is another test message."
+                    to: "+14155552345"
+                    custom_string: "Test message 001"
+
+      security:
+        - basicAuth: []
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: 
+              schema:
+                type: object
+                properties:
+                  http_code:
+                    type: string
+                    description: |-
+                      The HTTP code of the response. Visit [this page](/#status-codes) for more information.
+
+                      This parameter doesn’t reflect the status of each message. Check the status parameter of the message object to view the status of the individual message.
+                    example: 200
+                  response_code:
+                    type: string
+                    description: The response code of the operation. Visit [this page](/#status-codes) for more information.
+                    example: SUCCESS
+                  response_msg:
+                    type: string
+                    description: A message describing the outcome of the operation.
+                    example: Messages queued for delivery.
+                  data:
+                    type: object
+                    description: The parameters related to messages.
+                    properties:
+                      total_price:
+                        type: number
+                        example: 0.0792
+                        description: The total price of sending the messages. Visit [this page](/#status-codes) for more information.
+                      total_count:
+                        type: integer
+                        example: 1
+                        description: The total number of messages sent from the request.
+                      queued_count:
+                        type: integer
+                        example: 1
+                        description: |-
+                          The messages will be put in a queue if it goes through the validation process. The validation process checks whether the **Sender ID** is registered or not. Some countries don't require messages to go through the validation process.
+
+                          Messages scheduled to be sent right away will be sent immediately. If not, it will be queued.
+                      messages:
+                        type: array
+                        description: The parameters related to messages.
+                        items:
+                          type: object
+                          properties:
+                            direction:
+                              type: string
+                              description: |-
+                                It can either be **in** or **out**:
+
+                                - **in** - You received a message. it has to do with inbound messages.
+                                    
+                                - **out** \- You are sending a message. It has to do with outbound messages.
+                              example: in
+                            date:
+                              type: integer
+                              description: The date you sent the message. It is in <a href="http://help.clicksend.com/what-is-a-unix-timestamp" target="_blank">Unix format</a>.
+                              example: 1436871253
+                            to:
+                              type: string
+                              description: The phone number of the recipient. It should be in <a href="https://en.wikipedia.org/wiki/E.164" target="_blank">E.164 format</a>.
+                              example: "+61411111111"
+                            body:
+                              type: string
+                              description: |-
+                                The message sent. The price of sending a message depends on the number of characters and the type of message. There are two types:
+
+                                - Standard message - Contains only characters in the <a href="https://en.wikipedia.org/wiki/GSM_03.38" target="_blank">GSM</a> set, with a maximum of 160 characters.
+                                    
+                                - Unicode message - Contains characters outside the <a href="https://en.wikipedia.org/wiki/GSM_03.38" target="_blank">GSM</a> set, with a maximum of 70 characters.
+                                    
+
+                                Longer messages will be sent as multiple messages (parts), but the recipient will receive them as a single long message. Visit <a href="https://help.clicksend.com/article/h474eseq3a-how-many-characters-can-i-send-in-an-sms" target="_blank">this page</a> to learn more about the number of characters per message, and <a href="http://smscharactercount.com/" target="_blank">this page</a> to count the number of characters.
+                              example: Jelly liquorice marshmallow candy carrot cake 4Eyffjs1vL.
+                            from:
+                              type: string
+                              description: The sender of the message. This is also referred to as the **Sender ID**. If your **Sender ID** has a different country code to the recipient’s, it'll be replaced by a local number, except in <a href="https://help.clicksend.com/category/mfdctha7f0-country-specific-features-and-restrictions" target="_blank">certain countries</a>. If the sender number is blocked, a different number will replace it. 
+                              example: sendmobile
+                            schedule:
+                              type: integer
+                              description: The scheduled date of the message. It is in <a href="http://help.clicksend.com/what-is-a-unix-timestamp" target="_blank">Unix format</a>.
+                              example: 1436874701
+                            message_id:
+                              type: string
+                              description: The generated ID of the message. This ID is typically used as a reference for <a href="https://www.clicksend.com/au/help/" target="_blank">customer support</a> in case of any issues.
+                              example: BF7AD270-0DE2-418B-B606-71D527D9C1AE
+                            message_parts:
+                              type: integer
+                              description: The number of parts the message was broken into. To look at how many parts your message is broken down into, use the **<a href="http://smscharactercount.com/">SMS Character Count</a>**.
+                              example: 1
+                            message_price:
+                              type: number
+                              description: The price of this message. This depends on the total number of parts of the message.
+                              example: 0.07
+                            from_email: 
+                              type: string
+                              description: The email address to which replies should be emailed to. If omitted, the reply will be emailed back to the user who sent the outgoing SMS.
+                              example: john@example.com
+                            list_id: 
+                              type: string
+                              description: The _list_id_ of the contact list the message was sent to. This parameter will have a **null** value if you didn’t send to a list in the request.
+                              example: 1
+                            custom_string:
+                              type: string
+                              description: A note that was sent from the request.
+                              example: this is a test
+                            contact_id:
+                              type: string
+                              description: This is the ID of the contact. This parameter will have a **null** value if you didn’t provide a _contact_id_ in the request.
+                              example: 52649412
+                            user_id:
+                              type: integer
+                              description: The unique user ID of the sender.
+                              example: 1
+                            subaccount_id:
+                              type: integer
+                              description: This sub-account of the user. A user can have multiple sub-accounts.
+                              example: 1
+                            is_shared_system_number:
+                              type: boolean
+                              description: |-
+                                Indicates whether you use a shared number to send a message:
+
+                                - **True** \- if the sender is randomly selected.
+                                    
+                                - **False** \- if the sender is specified and passed the validation process.
+                              example: false
+                            country:
+                              type: string
+                              description: The country of the recipient in two-letter format (e.g. US, UK, AU, NZ, etc).
+                              example: AU
+                            carrier:
+                              type: string
+                              description: The phone carrier of the recipient.
+                              example: Telstra
+                            status:
+                              type: string
+                              description: The response code of the operation. Visit [this page](/#application-status-codes) for more information. This reflects the actual status of the individual message.
+                              example: SUCCESS
+                        example:
+                          - direction: "out"
+                            date: 1721099039,
+                            to: "+61411111111"
+                            body: "test message"
+                            from: "+61431111112"
+                            schedule: 1721099039
+                            message_id: "1ABC3200-C38C-6308-BE4B-C7C51D01DCF0"
+                            message_parts: 1
+                            message_price: 0.0792
+                            from_email: null
+                            list_id: null
+                            custom_string: ""
+                            contact_id: null
+                            user_id: 123456
+                            subaccount_id: 123456
+                            is_shared_system_number: false
+                            country: "AU"
+                            carrier: "Vodafone"
+                            status: "SUCCESS"
+                      _currency:
+                        type: object
+                        description: The parameters related to currency.
+                        properties:
+                          currency_name_short:
+                            type: string
+                            description: The currency used for the sender in three-letter format (e.g. USD, EUR, AUD, NZD, etc).
+                            example: AUD
+                          currency_prefix_d:
+                            type: string
+                            description: The symbol used to indicate the currency of the sender (e.g. $ , €, etc).
+                            example: $
+                          currency_prefix_c:
+                            type: string
+                            description: The currency basic unit (e.g. cents).
+                            example: c
+                          currency_name_long:
+                            type: string
+                            description: The full name of the currency.
+                            example: Australian Dollars
+                      blocked_count: 
+                        type: integer
+                        description: |-
+                          The number of messages unable to be sent. This is often caused by:
+
+                          - Receipient’s country not enabled for <a href="https://help.clicksend.com/article/qdavyt16qs-global-sending">global sending</a>.
+                              
+                          - **Sender ID** resitriction.
+                              
+                          - Number registration restrcition.
+                        example: 0
+  /v3/search/contacts-lists:
+    get:
+      summary: View Contact Lists
+      operationId: view-contact-lists
+      description: >-
+        _Get list of searched contact list_
+
+
+        ### Parameters
+
+
+        | Parameter | In | Type | Required | Description |
+
+        | --- | --- | --- | --- | --- |
+
+        | q | query | string | true | Your keyword or query. |
+
+        | page | query | integer(int32) | false | [Page
+        number](https://developers.clicksend.com/docs/rest/v3/#pagination) |
+
+        | limit | query | integer(int32) | false | [Number of records per
+        page](https://developers.clicksend.com/docs/rest/v3/#pagination) |
+
+
+        Refer to [Status
+        Codes](/#status-codes) for
+        definitions of HTTP status code responses.
+
+
+        This endpoint requires authentication, [more
+        info...](https://developers.clicksend.com/docs/rest/v3/#authentication)
+      security:
+        - basicAuth: []
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+          example: Test
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
