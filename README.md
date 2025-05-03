@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/clicksend-clicksend-mcp-server-badge.png)](https://mseep.ai/app/clicksend-clicksend-mcp-server)
+
 # ClickSend MCP Server
 
 A Model Context Protocol (MCP) server that enables Claude and other AI assistants to send SMS and MMS messages using ClickSend.
