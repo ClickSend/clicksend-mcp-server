@@ -40,7 +40,6 @@ To use this server with Claude Desktop, add the following to your configuration 
     "clicksend": {
       "command": "node",
       "args": [
-        "-y",
         "/path/to/repository/build/clicksend-mcp.js"
       ],
       "env": {
