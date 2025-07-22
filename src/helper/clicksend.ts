@@ -16,7 +16,8 @@ export async function makeClickSendRequest(method: string, path: string, data = 
         path: `/${sanitizedPath}`,
         headers: {
             'Authorization': `Basic ${auth}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'User-Agent': 'clicksend-mcp-server/1.0'
         },
     };
 
