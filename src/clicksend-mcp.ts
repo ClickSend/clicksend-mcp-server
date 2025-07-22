@@ -21,7 +21,8 @@ const endpoints = [
     "GET /v3/search/contacts-lists",
     "POST /v3/sms/price",
     "GET /v3/sms/templates",
-    "GET /v3/statistics/sms"
+    "GET /v3/statistics/sms",
+    "GET /v3/sms/history"
 ];
 
 export async function main() {

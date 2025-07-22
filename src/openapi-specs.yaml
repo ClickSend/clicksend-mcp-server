@@ -1164,3 +1164,257 @@ paths:
                             type: string
                             description: The full name of the currency.
                             example: Australian Dollars
+  /v3/sms/history:
+    get:
+      summary: View SMS History
+      operationId: view-sms-history
+      description: |-
+        _Use this endpoint to view previously sent SMS. You can filter the SMS history result using the query parameters_
+      security:
+        - basicAuth: []
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: page
+          in: query
+          description: The page number to retrieve. Use this parameter to navigate through the [pagination](/#pagination) results. The default value is 1.
+          schema:
+            type: integer
+          default: 1
+          example: 1
+        - name: limit
+          in: query
+          description: The number of items to return per page. This parameter controls the size of each page of results. The default value is 15.
+          schema:
+            type: integer
+            minimum: 15
+            maximum: 100
+            default: 15
+            example: 15
+        - name: q
+          in: query
+          description: |-
+            Allows filtering of results based on your search criteria. The query should be in the format `field_name:value`.
+
+            1. **Field Name**: The field within the SMS history you want to filter by. You can use the following fields:
+                
+                - _Status_: The status of the SMS. Available values for status are: Queued, Completed, Scheduled, WaitApproval, Failed, Cancelled, CancelledAfterReview, Received, Sent.
+                    
+                - _To_: The recipient of the SMS.
+                    
+                - _from_: The sender of the SMS.
+                    
+                - _subaccount_id_: The sub-account identifier.
+                    
+                - _message_id_: The ID of your SMS.
+                    
+            2. **Value**: The text or keyword you're searching for within the specified field. If left empty after the colon, the filter will look for all templates with any value in the **Field Name**.           
+
+            For example, if you are searching for a SMS with the status of Scheduled, the final query would look like this:
+
+              `q=status:Scheduled`
+
+            <div class="info-box">
+              <h4><i class="fas fa-info-circle"></i> Note:</h4>
+              <div>
+              <p>Some characters have to be encoded. For example, if you are searching for SMS sent from the phone number +61437085284, your search query q would be:<br/></p>
+                <ul>
+                  <li>q=from:%2B61437085284</li>
+                </ul>
+                <p>You can use the <a href="https://www.urlencoder.org/" target="_blank">URL encoder</a> to encode the text. If a character is not an alphanumeric character (A-Z, a-z, 0-9), it is typically either reserved or unsafe and should be encoded.</p>
+              </div>
+            </div>
+          schema:
+            type: string
+            default: field_name
+        - name: order_by
+          in: query
+          schema:
+            type: string
+            default: date:asc
+          description: |-
+            Specifies the field and order to sort the results by. The value is composed of the field name followed by a colon and the sort direction (_asc_ for ascending or _desc_ for descending). 
+            The default sort order is by _date_ in ascending order. You can use the following fields:
+            
+              - _date_
+              - _username_
+              - _from_ 
+              - _to_
+              - _status_
+              - _body_
+
+            For example, if you want to order by the most recently sent SMS, you should sort by date in descending order. The query would look like this:
+
+              `order_by=date:desc`
+        - name: date_from
+          in: query
+          schema:
+            type: integer
+          description: Start date to filter results. It should be in <a href="http://help.clicksend.com/what-is-a-unix-timestamp" target="_blank">Unix format</a>.
+        - name: date_to
+          in: query
+          schema:
+            type: integer
+          description: End date to filter results. It should be in <a href="http://help.clicksend.com/what-is-a-unix-timestamp" target="_blank">Unix format</a>.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  http_code:
+                    type: integer
+                    description: The HTTP code of the response. Visit [this page](/#status-codes) for more information.
+                    example: 200
+                  response_code:
+                    type: string
+                    description: The response code of the operation. Visit [this page](/#status-codes) for more information.
+                    example: SUCCESS
+                  response_msg:
+                    type: string
+                    description: A message describing the outcome of the operation.
+                    example: Here are your data.
+                  data:
+                    description: The parameters related to the SMS history shown. The response will depend on the pagination parameters, specified in the query parameters.
+                    allOf:
+                      - $ref: ../../../../common/pagination.yml
+                      - type: object
+                        properties:
+                          data:
+                            description: The parameters related to the actual SMS.
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                direction:
+                                  type: string
+                                  description: |-
+                                    It can either be in or out:
+                                      - **in** - You received a message. it has to do with inbound messages.
+                                      - **out** - You are sending a message. It has to do with outbound messages.
+                                  example: out
+                                date:
+                                  type: integer
+                                  description: The date you sent the message. It is in <a href="http://help.clicksend.com/what-is-a-unix-timestamp" target="_blank">Unix format</a>.
+                                  example: 1436932432
+                                to:
+                                  type: string
+                                  description: The phone number of the recipient. It should be in <a href="https://en.wikipedia.org/wiki/E.164" target="_blank">E.164 format</a>.
+                                  example: "+16783270696"
+                                body:
+                                  type: string
+                                  description: The message sent.
+                                  example: Chocolate bar icing icing oat cake carrot cake jelly cotton 1iQByXxdLN.
+                                status:
+                                  type: string
+                                  description: |-
+                                    The status of the SMS. It can either be:
+
+                                    - _Queued_
+                                    - _Completed_
+                                    - _Scheduled_
+                                    - _WaitApproval_
+                                    - _Failed_
+                                    - _Cancelled_
+                                    - _CancelledAfterReview_
+                                    - _Received_
+                                    - _Sent_
+                                    
+                                    This parameter reflects the actual status of the SMS. It is based on the 
+                                    status of the SMS sent from the <a href="https://en.wikipedia.org/wiki/SMS_gateway" target="_blank">SMS gateway</a>, which is different 
+                                    from the [API status code](https://developers-dev.clicksend.net/docs/#status-codes). Visit <a href="https://help.clicksend.com/article/8cc479qlbb-list-of-sms-gateway-error-codes" target="_blank">this page</a> for more information.
+
+                                  example: Completed
+                                from:
+                                  type: string
+                                  description: The sender of the message.
+                                  example: "sendlist"
+                                schedule:
+                                  type: integer
+                                  description: The scheduled date of the message. It is in <a href="http://help.clicksend.com/what-is-a-unix-timestamp" target="_blank">Unix format</a>.
+                                  example: 1436879372
+                                status_code:
+                                  type: integer
+                                  description: The status code sent from the <a href="https://en.wikipedia.org/wiki/SMS_gateway" target="_blank">SMS gateway</a>. Visit <a href="https://help.clicksend.com/article/8cc479qlbb-list-of-sms-gateway-error-codes" target="_blank">this page</a> for more information.
+                                  example: null
+                                status_text:
+                                  type: string
+                                  description: A message describing the _status_code_ of the operation. Visit <a href="https://help.clicksend.com/article/8cc479qlbb-list-of-sms-gateway-error-codes" target="_blank">this page</a> for more information.
+                                  example: null
+                                error_code:
+                                  type: integer
+                                  description: The error code of the operation. Visit <a href="https://help.clicksend.com/article/8cc479qlbb-list-of-sms-gateway-error-codes" target="_blank">this page</a> for more information. If no error occurred, the value is **null**.
+                                  nullable: true
+                                  example: null
+                                error_text:
+                                  type: string
+                                  description: A message describing the _error_code_ of the operation. Visit <a href="https://help.clicksend.com/article/8cc479qlbb-list-of-sms-gateway-error-codes" target="_blank">this page</a> for more information. If no error occurred, the value is **null**.
+                                  nullable: true
+                                  example: null
+                                message_id:
+                                  type: integer
+                                  description: The generated ID of the message.
+                                  example: 4E90F4C3-43A3-489D-9AB8-DA1F4332A0C3
+                                message_parts:
+                                  type: integer
+                                  description: The number of parts the message was broken into. To look at how many parts your message is broken down into, use the <a href="http://smscharactercount.com/" target="_blank"><strong>SMS Character Count</strong></a>.
+                                  example: "1.00"
+                                message_price:
+                                  type: number
+                                  description: The price of this message. This depends on the total number of parts of the message.
+                                  example: "0.070000"
+                          from_email:
+                            type: string
+                            description: The email address to which replies should be emailed to. If omitted, the reply will be emailed back to the user who sent the outgoing SMS
+                            example: null
+                          list_id:
+                            type: string
+                            description: The _list_id_ of the contact list the message was sent to. This parameter will have a **null** value if you didn’t send to a list in the request.
+                            nullable: true
+                            example: null
+                          custom_string: 
+                            type: string
+                            description: A note that was included with the outgoing SMS. If no note was included, the value is **null**.
+                            example: this is a test
+                          contact_id:
+                            type: string
+                            description: This is the ID of the contact. This parameter will have a **null** value if you didn’t provide a _contact_id_ in the request.
+                            example: 1
+                          user_id:  
+                            type: integer
+                            description: The unique user ID of the sender.
+                            example: 1
+                          subaccount_id:  
+                            type: integer
+                            description: The sub-account of the user. A user can have multiple sub-accounts.
+                            example: 1
+                          country:
+                            type: string
+                            description: The country of the recipient in two-letter format (e.g. US, UK, AU, NZ, etc).
+                            example: "US"
+                          carrier: 
+                            type: string
+                            description: The phone carrier of the recipient.
+                            example: ""
+                          first_name:
+                            type: string
+                            nullable: true
+                            description: The first name of the recipient. The name will appear if you sent the message to a contact from a contact list. If you are sending directly to a phone number, the value will be **null**.
+                            example: "John"
+                          last_name:
+                            type: string
+                            nullable: true
+                            description: The last name of the recipient. The name will appear if you sent the message to a contact from a contact list. If you are sending directly to a phone number, the value will be **null**.
+                            example: "Doe"
+                          _api_username: 
+                            type: string 
+                            description: The username of the SMS sender. This can be a <a href="https://dashboard.clicksend.com/account/subaccounts" target="_blank">sub-account</a>.
+                            example: "johndoe"
+
+
+  
