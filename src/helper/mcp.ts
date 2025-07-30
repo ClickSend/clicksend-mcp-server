@@ -47,11 +47,16 @@ export function registerTool(server: McpServer, toolId: string, toolDescription:
         console.error(params);
         console.error(JSON.stringify(params));
         
+        let requestBody = null;
+        if (method.toUpperCase() !== 'GET') {
+          requestBody = { ...bodyParams, source: 'MCP' };
+        }
+        
         // Make the API request
         const result = await clicksend.makeClickSendRequest(
           method.toUpperCase(), 
           finalPath, 
-          method.toUpperCase() === 'GET' ? null : bodyParams
+          requestBody
         );
         
         return {
