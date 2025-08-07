@@ -54,7 +54,15 @@ export function registerTool(server: McpServer, toolId: string, toolDescription:
             const startYear = startDateObj.getFullYear();
             const startMonth = startDateObj.getMonth();
             const startDay = startDateObj.getDate();
-            const startDate = new Date(startYear, startMonth, startDay, 0, 0, 0, 0);
+            let startHour = startDateObj.getHours();
+            let startMinute = startDateObj.getMinutes();
+            let startSecond = startDateObj.getSeconds();
+            if (!firstResult.start.isCertain('hour')) {
+              startHour = 0;
+              startMinute = 0;
+              startSecond = 0;
+            }
+            const startDate = new Date(startYear, startMonth, startDay, startHour, startMinute, startSecond, 0);
             queryParams.date_from = Math.floor(startDate.getTime() / 1000);
 
             let endDate;
@@ -63,7 +71,14 @@ export function registerTool(server: McpServer, toolId: string, toolDescription:
               const endYear = endDateObj.getFullYear();
               const endMonth = endDateObj.getMonth();
               const endDay = endDateObj.getDate();
-              endDate = new Date(endYear, endMonth, endDay, 23, 59, 59, 0);
+              const endHour = endDateObj.getHours();
+              const endMinute = endDateObj.getMinutes();
+              const endSecond = endDateObj.getSeconds();
+              if (endHour === 0 && endMinute === 0 && endSecond === 0) {
+                endDate = new Date(endYear, endMonth, endDay, 23, 59, 59, 0);
+              } else {
+                endDate = new Date(endYear, endMonth, endDay, endHour, endMinute, endSecond, 0);
+              }
             } else {
               endDate = new Date(startYear, startMonth, startDay, 23, 59, 59, 0);
             }
