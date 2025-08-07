@@ -20,6 +20,7 @@
     "@anthropic-ai/sdk": "^0.39.0",
     "@modelcontextprotocol/sdk": "^1.8.0",
     "axios": "^1.8.4",
+    "chrono-node": "^2.8.4",
     "clicksend": "^5.0.79",
     "dotenv": "^16.4.7",
     "http": "^0.0.1-security",

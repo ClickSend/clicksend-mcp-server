@@ -1,19 +1,49 @@
 import yaml from "js-yaml";
 import fs from "node:fs";
-import { any, z } from "zod";
+import { z } from "zod";
+import type { OpenApiSpec, OpenApiParameter } from '../types/openapi.ts';
 
 export function loadOpenApiSpec(filePath: string) {
   try {
     const fileContents = fs.readFileSync(filePath, 'utf8');
-    return yaml.load(fileContents);
+    const spec = yaml.load(fileContents) as OpenApiSpec;
+    injectUserDateRequestParameter(spec);
+    return spec;
   } catch (error: any) {
     console.error(`Error loading OpenAPI spec: ${error.message}`);
-    // Don't exit in test mode
     if (process.env.NODE_ENV !== 'test') {
       process.exit(1);
     }
-    throw error; // Throw so tests can catch it
+    throw error;
   }
+}
+
+/**
+ * Injects the user_date_request parameter into SMS history endpoint
+ * This allows AI agents to pass original user date requests for better parsing
+ */
+function injectUserDateRequestParameter(spec: OpenApiSpec) {
+  const smsHistoryPath = spec?.paths?.['/v3/sms/history'];
+  if (!smsHistoryPath?.get?.parameters) {
+    return;
+  }
+  
+  const parameters = smsHistoryPath.get.parameters;
+  const hasUserDateRequest = parameters.some((param: OpenApiParameter) => param.name === 'user_date_request');
+  if (hasUserDateRequest) {
+    return;
+  }
+  
+  const userDateRequestParam = {
+    name: 'user_date_request',
+    in: 'query',
+    schema: {
+      type: 'string'
+    },
+    description: "[FOR AI AGENTS] When user requests dates in natural language (e.g., 'Aug 5 2025', 'yesterday', 'last Tuesday'), pass the EXACT original user message here. The backend will parse this to generate correct Unix timestamps for date_from/date_to, avoiding common AI errors like wrong years. This parameter overrides any date_from/date_to values if provided."
+  };
+  
+  parameters.push(userDateRequestParam);
 }
 
 export function openapiToZod(schema: any, fullSpec: any): any {
@@ -154,7 +184,11 @@ export function buildParamsSchema(operation: any, openApiSpec: any): any {
 export function processParameters(parameters: any, paramsSchema: any, openApiSpec: any) {
   for (const param of parameters) {
     const zodParam = openapiToZod(param.schema, openApiSpec);
-    paramsSchema[param.name] = param.required ? zodParam : zodParam.optional();
+    
+    // Override with parameter-level description if it exists (takes precedence over schema description)
+    const finalParam = param.description ? zodParam.describe(param.description) : zodParam;
+    
+    paramsSchema[param.name] = param.required ? finalParam : finalParam.optional();
   }
 }
 
