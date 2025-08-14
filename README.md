@@ -1,21 +1,21 @@
 # ClickSend MCP Server
 
-A Model Context Protocol (MCP) server that enables Claude and other AI assistants to send SMS and MMS messages using ClickSend.
+**ClickSend MCP** refers to a Message Control Protocol (MCP) server developed specifically for **ClickSend**.
 
+## Purpose
 
-## Features
-
-- Send one SMS at a time by setting up the clicksend username and API Key
-- Get Price for sending message to contact list
-- Search Contacts or Contact Lists and send message to them
-- Get SMS Templates, and use that to send message
-- Get SMS Stastics for last 30 days
+**ClickSend MCP is designed to extend ClickSend’s messaging capabilities into modern AI ecosystems and platforms** - allowing developers and AI agents (like GPTs and LangChain) to easily send SMS, and other messages via ClickSend—without needing to write custom code.
+ 
+This accelerates adoption, enables new AI-driven use cases, and positions ClickSend as a future-ready messaging platform in the age of intelligent automation.
 
 ## Requirements
 
 - Node.js >= 18
   - you can use`nvm` (Node Version Manager) to set the right version to run this app
 
+## Installation
+
+Download the Claude for desktop **[here](https://claude.ai/download)**
 
 ## Configuration
 
@@ -24,15 +24,18 @@ The server requires two environment variables:
 - `CLICKSEND_USERNAME`: Your ClickSend username 
 - `CLICKSEND_API_KEY`: Your ClickSend API Key
 
-You can find the username and key at https://dashboard.clicksend.com/account/subaccounts once you Sign Up to ClickSend
+You can find the username and key at https://dashboard.clicksend.com/account/subaccounts once you Sign Up to ClickSend.
 
 ### Claude Desktop Configuration
 
-To use this server with Claude Desktop, add the following to your configuration file:
+- Open Claude for Desktop
+- Go to **Settings** from the system's menu bar
+- In the settings window, navigate to the **Developer** tab and click **Edit Config**.
+  This opens the configuation file located at:
 
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+  - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
-**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+  - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
@@ -51,8 +54,7 @@ To use this server with Claude Desktop, add the following to your configuration 
 }
 
 ```
-After that, restart Claude Desktop to reload the configuration. 
-If connected, you should see clicksend-send-sms when you click on the hammer icon
+After that, restart Claude Desktop to reload the configuration. If connected, you should see clicksend-send-sms when you click on the hammer icon.
 
 ## Example Interactions with Claude
 
@@ -63,12 +65,51 @@ Simple SMS:
 Send a text message to the number 61411111111 saying "I'm using ClickSend MCP server to sent SMS!"
 ```
 
+## Features
+
+- Send one SMS at a time by setting up the clicksend username and API Key
+- Get Price for sending message to contact list
+- Search Contacts or Contact Lists and send message to them
+- Get SMS Templates, and use that to send message
+- Get SMS Stastics for last 30 days
+
+## Supported APIs
+
+1. `POST /v3/sms/send`
+ - **Operation ID:** `send-sms`
+ - **Summary:** Send SMS
+ - **Description:** Send messages to recipients, either as phone numbers or contacts from a contact list.
+
+2. `POST /v3/sms/price`
+ - **Operation ID:** `calculate-sms-price`
+ - **Summary:** Calculate SMS Price
+ - **Description:** Calculate the price of sending messages based on message type and length.
+
+3. `GET /v3/sms/templates`
+ - **Operation ID:** `view-sms-templates`
+ - **Summary:** View SMS Templates
+ - **Description:** Retrieve SMS templates with filtering options.
+
+4. `GET /v3/sms/history`
+ - **Operation ID:** `view-sms-history`
+ - **Summary:** View SMS History
+ - **Description:** View previously sent SMS with filtering and pagination options.
+
+5. `GET /v3/statistics/sms`
+ - **Operation ID:** `view-sms-statistics`
+ - **Summary:** View SMS Statistics
+ - **Description:** Get SMS statistics for the last 30 days.
+
+6. `GET /v3/search/contacts-lists`
+ - **Operation ID:** `view-contact-lists`
+ - **Summary:**  View Contact Lists
+ - **Description:** Get a list of searched contact lists.
+
 ## Important Notes
 
 1. **Phone Number Format**: All phone numbers must be in E.164 format (e.g., +61411111111)
 2. **Rate Limits**: Be aware of your ClickSend account's rate limits and pricing
 3. **Security**: Keep your ClickSend credentials secure and never commit them to version control
-
 
 ## Troubleshooting
 
