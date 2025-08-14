@@ -71,6 +71,7 @@ Send a text message to the number 61411111111 saying "I'm using ClickSend MCP se
 - Get Price for sending message to contact list
 - Search Contacts or Contact Lists and send message to them
 - Get SMS Templates, and use that to send message
+- View/Retrieve SMS history
 - Get SMS Statistics for last 30 days
 
 ## Supported APIs
