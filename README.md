@@ -15,7 +15,7 @@ This accelerates adoption, enables new AI-driven use cases, and positions ClickS
 
 ## Installation
 
-Download the Claude for desktop **[here](https://claude.ai/download)**
+Download the Claude for desktop **[here](https://claude.ai/download)**.
 
 ## Configuration
 
@@ -71,7 +71,7 @@ Send a text message to the number 61411111111 saying "I'm using ClickSend MCP se
 - Get Price for sending message to contact list
 - Search Contacts or Contact Lists and send message to them
 - Get SMS Templates, and use that to send message
-- Get SMS Stastics for last 30 days
+- Get SMS Statistics for last 30 days
 
 ## Supported APIs
 
