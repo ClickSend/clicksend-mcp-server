@@ -1,10 +1,10 @@
 # ClickSend MCP Server
 
-**ClickSend MCP** refers to a Message Control Protocol (MCP) server developed specifically for **ClickSend**.
+This is the official **ClickSend MCP Server** developed by the ClickSend team. For security reasons do not use unofficial versions of ClickSend MCP.
 
 ## Purpose
 
-**ClickSend MCP is designed to extend ClickSend’s messaging capabilities into modern AI ecosystems and platforms** - allowing developers and AI agents (like GPTs and LangChain) to easily send SMS, and other messages via ClickSend—without needing to write custom code.
+**ClickSend MCP is designed to extend ClickSend’s messaging capabilities into modern AI ecosystems and platforms** - allowing developers to easily send SMS via ClickSend without needing to write custom code.
  
 This accelerates adoption, enables new AI-driven use cases, and positions ClickSend as a future-ready messaging platform in the age of intelligent automation.
 
@@ -15,7 +15,7 @@ This accelerates adoption, enables new AI-driven use cases, and positions ClickS
 
 ## Installation
 
-Download the Claude for desktop **[here](https://claude.ai/download)**.
+Download an AI desktop client. An example would be Claude for Desktop which you can download **[here](https://claude.ai/download)**.
 
 ## Configuration
 
