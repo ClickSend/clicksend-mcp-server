@@ -41,13 +41,14 @@ You can find the username and key at https://dashboard.clicksend.com/account/sub
 {
   "mcpServers": {
     "clicksend": {
-      "command": "node",
+      "command": "npx",
       "args": [
-        "/path/to/repository/build/clicksend-mcp.js"
+        "-y",
+        "@clicksend/clicksend-mcp-server@latest"
       ],
-      "env": {
-        "CLICKSEND_USERNAME": "your clicksend username",
-        "CLICKSEND_API_KEY": "your API Key",
+      "env": { 
+        "CLICKSEND_USERNAME": "<username>",
+         "CLICKSEND_API_KEY": "<api-key>"
       }
     }
   }
