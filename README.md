@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/clicksend-clicksend-mcp-server-badge.png)](https://mseep.ai/app/clicksend-clicksend-mcp-server)
+
 # ClickSend MCP Server
 
 This is the official **ClickSend MCP Server** developed by the ClickSend team. For security reasons do not use unofficial versions of ClickSend MCP.
