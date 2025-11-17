@@ -59,7 +59,7 @@ You can find the username and key at https://dashboard.clicksend.com/account/sub
 ```
 
 - Using Local Build
-- 
+  
 ```json
 {
   "mcpServers": {
