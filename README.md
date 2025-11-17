@@ -37,6 +37,8 @@ You can find the username and key at https://dashboard.clicksend.com/account/sub
 
   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
+- Using NPM Package
+  
 ```json
 {
   "mcpServers": {
@@ -49,6 +51,26 @@ You can find the username and key at https://dashboard.clicksend.com/account/sub
       "env": { 
         "CLICKSEND_USERNAME": "<username>",
          "CLICKSEND_API_KEY": "<api-key>"
+      }
+    }
+  }
+}
+
+```
+
+- Using Local Build
+- 
+```json
+{
+  "mcpServers": {
+    "clicksend": {
+      "command": "node",
+      "args": [
+        "/path/to/repository/build/clicksend-mcp.js"
+      ],
+      "env": {
+        "CLICKSEND_USERNAME": "your clicksend username",
+        "CLICKSEND_API_KEY": "your API Key",
       }
     }
   }
