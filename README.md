@@ -70,7 +70,7 @@ You can find the username and key at https://dashboard.clicksend.com/account/sub
       ],
       "env": {
         "CLICKSEND_USERNAME": "your clicksend username",
-        "CLICKSEND_API_KEY": "your API Key",
+        "CLICKSEND_API_KEY": "your API Key"
       }
     }
   }
