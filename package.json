@@ -1,6 +1,6 @@
 {
   "name": "@clicksend/clicksend-mcp-server",
-  "mcpName": "com.clicksend/clicksend-mcp-server",
+  "mcpName": "io.github.ClickSend/clicksend-mcp-server",
   "version": "2026.8.10",
   "description": "A Model Context Protocol (MCP) server that enables AI assistants to send SMS and MMS messages using ClickSend.",
   "license": "MIT",
